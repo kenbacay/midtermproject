@@ -58,8 +58,7 @@ class Session extends BaseConfig
      *
      * IMPORTANT: You are REQUIRED to set a valid save path!
      */
-    public string $savePath = WRITEPATH . 'session';
-
+public string $savePath = 'C:/xampp/tmp';
     /**
      * --------------------------------------------------------------------------
      * Session Match IP

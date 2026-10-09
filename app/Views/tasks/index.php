@@ -5,32 +5,59 @@
 </head>
 <body>
 
-    <h1>All Tasks</h1>
+    <?php if (session()->get('logged_in')): ?>
+        <a href="<?= site_url('logout') ?>">Logout</a>
+    <?php else: ?>
+        <a href="<?= site_url('login') ?>">Login</a>
+    <?php endif; ?>
 
-    <nav>
-        <a href="/">Welcome</a> |
-        <a href="/tasks">Task List</a> |
-        <a href="/profile">Profile</a> |
-        <a href="/about">About</a>
-    </nav>
+    <h1>Task List</h1>
+
+    <a href="<?= site_url('tasks/new') ?>">Add New Task</a>
+
+    <br><br>
+
+    <?php if (empty($tasks)): ?>
+        <p>No active tasks found.</p>
+    <?php else: ?>
+
+        <?php foreach ($tasks as $task): ?>
+            <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+
+                <h3><?= esc($task['title']) ?></h3>
+
+                <p>
+                    <?= esc($task['description'] ?? '') ?>
+                </p>
+
+                <p>
+                    Task date: <?= esc($task['task_date']) ?>
+                </p>
+
+                <a href="<?= site_url('tasks/edit/' . $task['id']) ?>">
+                    Edit
+                </a>
+
+                <form
+                    action="<?= site_url('tasks/delete/' . $task['id']) ?>"
+                    method="post"
+                    style="display: inline;"
+                >
+                    <?= csrf_field() ?>
+
+                    <button type="submit">
+                        Delete
+                    </button>
+                </form>
+
+            </div>
+        <?php endforeach; ?>
+
+    <?php endif; ?>
 
     <br>
 
-    <table border="1" cellpadding="8">
-        <tr>
-            <th>Task</th>
-            <th>Status</th>
-            <th>Date</th>
-        </tr>
-
-        <?php foreach ($tasks as $task): ?>
-            <tr>
-                <td><?= esc($task['title']) ?></td>
-                <td><?= esc($task['status']) ?></td>
-                <td><?= esc($task['task_date']) ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
+    <a href="<?= site_url('/') ?>">Back to Welcome</a>
 
 </body>
 </html>

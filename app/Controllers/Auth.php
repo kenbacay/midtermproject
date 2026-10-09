@@ -2,76 +2,47 @@
 
 namespace App\Controllers;
 
+use App\Models\UserModel;
+
 class Auth extends BaseController
 {
     public function login()
     {
-        // If already logged in, go directly to the dashboard
-        if (session('logged_in')) {
-            return redirect()->to('/dashboard');
-        }
+        $method = strtolower((string) $this->request->getMethod());
 
-        if ($this->request->getMethod() === 'post') {
-            $rules = [
-                'username' => 'required|min_length[3]',
-                'password' => 'required|min_length[4]'
-            ];
-
-            if (! $this->validate($rules)) {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with('errors', $this->validator->getErrors());
-            }
-
-            $username = $this->request->getPost('username');
+        if ($method === 'post') {
+            $username = trim($this->request->getPost('username'));
             $password = $this->request->getPost('password');
 
-            // Temporary demo account
-            $correctUsername = 'user';
-            $correctPasswordHash = password_hash('user', PASSWORD_DEFAULT);
+            $userModel = new UserModel();
 
-            if (
-                $username !== $correctUsername ||
-                ! password_verify($password, $correctPasswordHash)
-            ) {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with('error', 'Invalid username or password.');
+            $user = $userModel
+                ->where('username', $username)
+                ->first();
+
+            if ($user && password_verify($password, $user['password'])) {
+                session()->regenerate();
+
+                session()->set([
+                    'user_id'   => $user['id'],
+                    'username'  => $user['username'],
+                    'logged_in' => true,
+                ]);
+
+                return redirect()->to('/tasks');
             }
 
-            // Create the login session
-            session()->regenerate(true);
-
-            session()->set([
-                'logged_in' => true,
-                'username'  => $username
+            return view('auth/login', [
+                'error' => 'Invalid username or password.'
             ]);
-
-            return redirect()->to('/dashboard');
         }
 
-        return view('login');
-    }
-
-    public function dashboard()
-    {
-        // Protect the dashboard
-        if (! session('logged_in')) {
-            return redirect()->to('/login');
-        }
-
-        return view('dashboard');
+        return view('auth/login');
     }
 
     public function logout()
     {
-        // Remove login-related session values
-        session()->remove(['logged_in', 'username']);
-
-        // Create a new session ID
-        session()->regenerate(true);
+        session()->destroy();
 
         return redirect()->to('/login');
     }
