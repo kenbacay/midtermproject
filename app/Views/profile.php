@@ -30,8 +30,7 @@
 
     <p>
         <strong>Email:</strong>
-        <?= esc($user['email']) ?>
-    </p>
+<?= esc($user['email'] ?? 'Not provided') ?>    </p>
 
     <p>
         <strong>Created At:</strong>
