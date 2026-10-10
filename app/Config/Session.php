@@ -58,7 +58,8 @@ class Session extends BaseConfig
      *
      * IMPORTANT: You are REQUIRED to set a valid save path!
      */
-public string $savePath = 'C:/xampp/tmp';
+    public string $savePath = 'C:/xampp/tmp';
+
     /**
      * --------------------------------------------------------------------------
      * Session Match IP
@@ -67,7 +68,7 @@ public string $savePath = 'C:/xampp/tmp';
      * Whether to match the user's IP address when reading the session data.
      *
      * WARNING: If you're using the database driver, don't forget to update
-     *          your session table's PRIMARY KEY when changing this setting.
+     *          the session table's PRIMARY KEY when changing this setting.
      */
     public bool $matchIP = false;
 
@@ -124,4 +125,21 @@ public string $savePath = 'C:/xampp/tmp';
      * seconds.
      */
     public int $lockMaxRetries = 300;
+
+    /**
+     * --------------------------------------------------------------------------
+     * Environment-specific Session Path
+     * --------------------------------------------------------------------------
+     *
+     * XAMPP uses the Windows path above.
+     * Render uses Linux and stores sessions in /tmp.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        if (DIRECTORY_SEPARATOR === '/') {
+            $this->savePath = '/tmp/ci_sessions';
+        }
+    }
 }
