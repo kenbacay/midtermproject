@@ -36,18 +36,26 @@ class Products extends BaseController
         }
 
         $imageName = null;
-$image = $this->request->getFile('image');
+        $image = $this->request->getFile('image');
 
-if ($image && $image->isValid() && ! $image->hasMoved()) {
-    $uploadPath = FCPATH . 'uploads/products/';
+        if ($image && $image->isValid() && ! $image->hasMoved()) {
+            $uploadPath = FCPATH . 'uploads/products/';
 
-    if (! is_dir($uploadPath)) {
-        mkdir($uploadPath, 0775, true);
-    }
+            if (! is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
 
-    $imageName = $image->getRandomName();
-    $image->move($uploadPath, $imageName);
-}
+            chmod($uploadPath, 0777);
+
+            if (! is_writable($uploadPath)) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Upload folder is not writable.');
+            }
+
+            $imageName = $image->getRandomName();
+            $image->move($uploadPath, $imageName);
+        }
 
         $productModel = new ProductModel();
 
@@ -106,8 +114,22 @@ if ($image && $image->isValid() && ! $image->hasMoved()) {
         $image = $this->request->getFile('image');
 
         if ($image && $image->isValid() && ! $image->hasMoved()) {
+            $uploadPath = FCPATH . 'uploads/products/';
+
+            if (! is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            chmod($uploadPath, 0777);
+
+            if (! is_writable($uploadPath)) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Upload folder is not writable.');
+            }
+
             $imageName = $image->getRandomName();
-            $image->move(FCPATH . 'uploads/products', $imageName);
+            $image->move($uploadPath, $imageName);
         }
 
         $productModel->update($id, [
