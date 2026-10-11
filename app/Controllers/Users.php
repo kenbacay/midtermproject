@@ -23,10 +23,10 @@ class Users extends BaseController
     public function create()
     {
         $rules = [
-            'username' => 'required|max_length[50]',
+            'username'  => 'required|max_length[50]',
             'full_name' => 'required|max_length[100]',
-            'password' => 'required|min_length[8]',
-            'avatar'   => 'permit_empty|is_image[avatar]|max_size[avatar,2048]',
+            'password'  => 'required|min_length[8]',
+            'avatar'    => 'permit_empty|is_image[avatar]|max_size[avatar,2048]',
         ];
 
         if (! $this->validate($rules)) {
@@ -39,8 +39,20 @@ class Users extends BaseController
         $avatar = $this->request->getFile('avatar');
 
         if ($avatar && $avatar->isValid() && ! $avatar->hasMoved()) {
+            $uploadPath = WRITEPATH . 'uploads/avatars/';
+
+            if (! is_dir($uploadPath)) {
+                mkdir($uploadPath, 0775, true);
+            }
+
+            if (! is_writable($uploadPath)) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Avatar upload folder is not writable.');
+            }
+
             $avatarName = $avatar->getRandomName();
-            $avatar->move(FCPATH . 'uploads/avatars', $avatarName);
+            $avatar->move($uploadPath, $avatarName);
         }
 
         $userModel = new UserModel();
@@ -87,10 +99,10 @@ class Users extends BaseController
         }
 
         $rules = [
-            'username' => 'required|max_length[50]',
+            'username'  => 'required|max_length[50]',
             'full_name' => 'required|max_length[100]',
-            'password' => 'permit_empty|min_length[8]',
-            'avatar'   => 'permit_empty|is_image[avatar]|max_size[avatar,2048]',
+            'password'  => 'permit_empty|min_length[8]',
+            'avatar'    => 'permit_empty|is_image[avatar]|max_size[avatar,2048]',
         ];
 
         if (! $this->validate($rules)) {
@@ -116,14 +128,46 @@ class Users extends BaseController
         $avatar = $this->request->getFile('avatar');
 
         if ($avatar && $avatar->isValid() && ! $avatar->hasMoved()) {
+            $uploadPath = WRITEPATH . 'uploads/avatars/';
+
+            if (! is_dir($uploadPath)) {
+                mkdir($uploadPath, 0775, true);
+            }
+
+            if (! is_writable($uploadPath)) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Avatar upload folder is not writable.');
+            }
+
             $avatarName = $avatar->getRandomName();
-            $avatar->move(FCPATH . 'uploads/avatars');
+            $avatar->move($uploadPath, $avatarName);
+
             $data['avatar'] = $avatarName;
         }
 
         $userModel->update($id, $data);
 
         return redirect()->to('/users');
+    }
+
+    public function avatar($filename)
+    {
+        $filename = basename($filename);
+        $filePath = WRITEPATH . 'uploads/avatars/' . $filename;
+
+        if (! is_file($filePath)) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException(
+                'Avatar not found'
+            );
+        }
+
+        $mimeType = mime_content_type($filePath)
+            ?: 'application/octet-stream';
+
+        return $this->response
+            ->setHeader('Content-Type', $mimeType)
+            ->setBody(file_get_contents($filePath));
     }
 
     public function delete($id)

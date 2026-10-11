@@ -1,11 +1,17 @@
 <h1>Edit Staff Account</h1>
 
 <?php if (session()->getFlashdata('errors')): ?>
-    <ul>
+    <ul style="color: red;">
         <?php foreach (session()->getFlashdata('errors') as $error): ?>
             <li><?= esc($error) ?></li>
         <?php endforeach; ?>
     </ul>
+<?php endif; ?>
+
+<?php if (session()->getFlashdata('error')): ?>
+    <p style="color: red;">
+        <?= esc(session()->getFlashdata('error')) ?>
+    </p>
 <?php endif; ?>
 
 <form
@@ -20,18 +26,20 @@
         type="text"
         id="username"
         name="username"
-        value="<?= old('username', $user['username']) ?>"
+        value="<?= esc(old('username', $user['username'])) ?>"
         required
-    ><br><br>
+    >
+    <br><br>
 
     <label for="full_name">Full Name:</label><br>
     <input
         type="text"
         id="full_name"
         name="full_name"
-        value="<?= old('full_name', $user['full_name']) ?>"
+        value="<?= esc(old('full_name', $user['full_name'])) ?>"
         required
-    ><br><br>
+    >
+    <br><br>
 
     <label for="password">New Password:</label><br>
     <input
@@ -39,7 +47,8 @@
         id="password"
         name="password"
         placeholder="Leave blank to keep current password"
-    ><br><br>
+    >
+    <br><br>
 
     <label for="avatar">Replace Avatar:</label><br>
     <input
@@ -47,13 +56,14 @@
         id="avatar"
         name="avatar"
         accept="image/*"
-    ><br><br>
+    >
+    <br><br>
 
     <?php if (! empty($user['avatar'])): ?>
         <p>Current Avatar:</p>
 
         <img
-            src="<?= base_url('uploads/avatars/' . esc($user['avatar'])) ?>"
+            src="<?= base_url('users/avatar/' . $user['avatar']) ?>"
             width="120"
             alt="<?= esc($user['full_name']) ?>"
         >

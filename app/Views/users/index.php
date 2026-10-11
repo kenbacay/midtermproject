@@ -3,33 +3,33 @@
 <nav>
     <?php if (session()->get('logged_in')): ?>
 
-        <a href="/index.php/products">
+        <a href="<?= base_url('products') ?>">
             <button type="button">Products</button>
         </a>
 
-        <a href="/index.php/customers">
+        <a href="<?= base_url('customers') ?>">
             <button type="button">Customers</button>
         </a>
 
-        <a href="/index.php/users">
+        <a href="<?= base_url('users') ?>">
             <button type="button">Staff</button>
         </a>
 
-        <a href="/index.php/sales/new">
+        <a href="<?= base_url('sales/new') ?>">
             <button type="button">Buy / Record Sale</button>
         </a>
 
-        <a href="/index.php/sales/history">
+        <a href="<?= base_url('sales/history') ?>">
             <button type="button">Sales History</button>
         </a>
 
-        <a href="/index.php/logout">
+        <a href="<?= base_url('logout') ?>">
             <button type="button">Log Out</button>
         </a>
 
     <?php else: ?>
 
-        <a href="/index.php/login">
+        <a href="<?= base_url('login') ?>">
             <button type="button">Log In</button>
         </a>
 
@@ -39,11 +39,11 @@
 <br>
 
 <nav>
-    <a href="/index.php/">Home</a> |
-    <a href="/index.php/products">Products</a> |
-    <a href="/index.php/customers">Customers</a> |
-    <a href="/index.php/users">Staff Accounts</a> |
-    <a href="/index.php/users/new">Add Staff</a>
+    <a href="<?= base_url('/') ?>">Home</a> |
+    <a href="<?= base_url('products') ?>">Products</a> |
+    <a href="<?= base_url('customers') ?>">Customers</a> |
+    <a href="<?= base_url('users') ?>">Staff Accounts</a> |
+    <a href="<?= base_url('users/new') ?>">Add Staff</a>
 </nav>
 
 <br><br>
@@ -70,7 +70,7 @@
                     <td>
                         <?php if (! empty($user['avatar'])): ?>
                             <img
-                                src="/uploads/avatars/<?= esc($user['avatar'], 'url') ?>"
+                                src="<?= base_url('users/avatar/' . $user['avatar']) ?>"
                                 width="80"
                                 alt="<?= esc($user['full_name']) ?>"
                             >
@@ -84,12 +84,12 @@
                     <td><?= esc($user['created_at']) ?></td>
 
                     <td>
-                        <a href="/index.php/users/edit/<?= esc($user['id']) ?>">
+                        <a href="<?= base_url('users/edit/' . $user['id']) ?>">
                             Edit
                         </a>
 
                         <form
-                            action="/index.php/users/delete/<?= esc($user['id']) ?>"
+                            action="<?= base_url('users/delete/' . $user['id']) ?>"
                             method="post"
                             style="display: inline;"
                         >

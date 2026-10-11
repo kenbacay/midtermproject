@@ -47,4 +47,5 @@ $routes->post('sales/create', 'Sales::create');
 $routes->get('sales/history', 'Sales::history');
 
 $routes->get('products/image/(:segment)', 'Products::image/$1');
+$routes->get('users/avatar/(:segment)', 'Users::avatar/$1');
 });
