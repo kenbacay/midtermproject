@@ -1,45 +1,18 @@
 <h1>Products</h1>
 
 <nav>
-    <?php if (session()->get('logged_in')): ?>
-
-        <a href="<?= base_url('products') ?>">
-            <button type="button">Products</button>
-        </a>
-
-        <a href="<?= base_url('customers') ?>">
-            <button type="button">Customers</button>
-        </a>
-
-        <a href="<?= base_url('users') ?>">
-            <button type="button">Staff</button>
-        </a>
-
-        <a href="<?= base_url('sales/new') ?>">
-            <button type="button">Buy / Record Sale</button>
-        </a>
-
-        <a href="<?= base_url('sales/history') ?>">
-            <button type="button">Sales History</button>
-        </a>
-
-        <a href="<?= base_url('logout') ?>">
-            <button type="button">Log Out</button>
-        </a>
-
-    <?php else: ?>
-
-        <a href="<?= base_url('login') ?>">
-            <button type="button">Log In</button>
-        </a>
-
-    <?php endif; ?>
+    <a href="/index.php/products">Products</a> |
+    <a href="/index.php/customers">Customers</a> |
+    <a href="/index.php/users">Staff</a> |
+    <a href="/index.php/sales/new">Buy / Record Sale</a> |
+    <a href="/index.php/sales/history">Sales History</a> |
+    <a href="/index.php/logout">Log Out</a>
 </nav>
 
 <br>
 
-<a href="<?= base_url('/') ?>">Home</a> |
-<a href="<?= base_url('products/new') ?>">Add Product</a>
+<a href="/index.php/">Home</a> |
+<a href="/index.php/products/new">Add Product</a>
 
 <br><br>
 
@@ -64,7 +37,7 @@
                 <td>
                     <?php if (! empty($product['image'])): ?>
                         <img
-                            src="<?= base_url('uploads/products/' . esc($product['image'])) ?>"
+                            src="/uploads/products/<?= esc($product['image'], 'url') ?>"
                             width="80"
                             alt="<?= esc($product['name']) ?>"
                         >

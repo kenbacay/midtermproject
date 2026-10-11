@@ -6,50 +6,41 @@
 <body>
 
 <h1>Record Sale</h1>
+
 <nav>
     <?php if (session()->get('logged_in')): ?>
 
-        <a href="<?= base_url('products') ?>">
+        <a href="/index.php/products">
             <button type="button">Products</button>
         </a>
 
-        <a href="<?= base_url('customers') ?>">
+        <a href="/index.php/customers">
             <button type="button">Customers</button>
         </a>
 
-        <a href="<?= base_url('users') ?>">
+        <a href="/index.php/users">
             <button type="button">Staff</button>
         </a>
 
-        <a href="<?= base_url('sales/new') ?>">
+        <a href="/index.php/sales/new">
             <button type="button">Buy / Record Sale</button>
         </a>
 
-        <a href="<?= base_url('sales/history') ?>">
+        <a href="/index.php/sales/history">
             <button type="button">Sales History</button>
         </a>
 
-        <a href="<?= base_url('logout') ?>">
+        <a href="/index.php/logout">
             <button type="button">Log Out</button>
         </a>
 
     <?php else: ?>
 
-        <a href="<?= base_url('login') ?>">
+        <a href="/index.php/login">
             <button type="button">Log In</button>
         </a>
 
     <?php endif; ?>
-</nav>
-
-<br>
-
-<nav>
-    <a href="<?= base_url('products') ?>">Products</a> |
-    <a href="<?= base_url('customers') ?>">Customers</a> |
-    <a href="<?= base_url('sales/new') ?>">Record Sale</a> |
-    <a href="<?= base_url('sales/history') ?>">Sales History</a> |
-    <a href="<?= base_url('logout') ?>">Logout</a>
 </nav>
 
 <br>
@@ -60,7 +51,7 @@
     </p>
 <?php endif; ?>
 
-<form action="<?= site_url('sales/create') ?>" method="post">
+<form action="/index.php/sales/create" method="post">
     <?= csrf_field() ?>
 
     <label for="product_id">Product:</label>
