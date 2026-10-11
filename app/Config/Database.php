@@ -87,9 +87,10 @@ class Database extends Config
     //        'schema'     => 'public',
     //        'DBDriver'   => 'Postgre',
     //        'DBPrefix'   => '',
-    //        'pConnect'   => false,
+    //        'pConnect'  => false,
     //        'DBDebug'    => true,
     //        'charset'    => 'utf8',
+    //        'swapPre'    => '',
     //        'failover'   => [],
     //        'port'       => 5432,
     //        'dateFormat' => [
@@ -113,7 +114,7 @@ class Database extends Config
     //        'schema'     => 'dbo',
     //        'DBDriver'   => 'SQLSRV',
     //        'DBPrefix'   => '',
-    //        'pConnect'   => false,
+    //        'pConnect'  => false,
     //        'DBDebug'    => true,
     //        'charset'    => 'utf8',
     //        'DBCollat'   => 'utf8_general_ci',
@@ -147,9 +148,10 @@ class Database extends Config
     //        'password'   => 'root',
     //        'DBDriver'   => 'OCI8',
     //        'DBPrefix'   => '',
-    //        'pConnect'   => false,
+    //        'pConnect'  => false,
     //        'DBDebug'    => true,
     //        'charset'    => 'AL32UTF8',
+    //        'swapPre'    => '',
     //        'failover'   => [],
     //        'dateFormat' => [
     //            'date'     => 'Y-m-d',
@@ -171,7 +173,7 @@ class Database extends Config
         'database'    => ':memory:',
         'DBDriver'    => 'SQLite3',
         'DBPrefix'    => 'db_',
-        'pConnect'    => false,
+        'pConnect'   => false,
         'DBDebug'     => true,
         'charset'     => 'utf8',
         'DBCollat'    => '',
@@ -197,52 +199,42 @@ class Database extends Config
     {
         parent::__construct();
 
-        /*
-         * Render environment variables:
-         * DB_HOST
-         * DB_PORT
-         * DB_NAME
-         * DB_USER
-         * DB_PASSWORD
-         * DB_DRIVER
-         * DB_ENCRYPT
-         */
+        $hostname = getenv('DB_HOST');
+        $username = getenv('DB_USER');
+        $password = getenv('DB_PASSWORD');
+        $database = getenv('DB_NAME');
+        $driver   = getenv('DB_DRIVER');
+        $port     = getenv('DB_PORT');
+        $ssl      = getenv('DB_SSL');
 
-        $this->default['hostname'] = env(
-            'DB_HOST',
-            env('database.default.hostname', $this->default['hostname'])
-        );
+        $this->default['hostname'] = ($hostname !== false && $hostname !== '')
+            ? $hostname
+            : env('database.default.hostname', 'localhost');
 
-        $this->default['port'] = (int) env(
-            'DB_PORT',
-            env('database.default.port', $this->default['port'])
-        );
+        $this->default['username'] = ($username !== false && $username !== '')
+            ? $username
+            : env('database.default.username', '');
 
-        $this->default['database'] = env(
-            'DB_NAME',
-            env('database.default.database', $this->default['database'])
-        );
+        $this->default['password'] = ($password !== false)
+            ? $password
+            : env('database.default.password', '');
 
-        $this->default['username'] = env(
-            'DB_USER',
-            env('database.default.username', $this->default['username'])
-        );
+        $this->default['database'] = ($database !== false && $database !== '')
+            ? $database
+            : env('database.default.database', '');
 
-        $this->default['password'] = env(
-            'DB_PASSWORD',
-            env('database.default.password', $this->default['password'])
-        );
+        $this->default['DBDriver'] = ($driver !== false && $driver !== '')
+            ? $driver
+            : env('database.default.DBDriver', 'MySQLi');
 
-        $this->default['DBDriver'] = env(
-            'DB_DRIVER',
-            env('database.default.DBDriver', $this->default['DBDriver'])
-        );
+        $this->default['port'] = ($port !== false && $port !== '')
+            ? (int) $port
+            : (int) env('database.default.port', 3306);
 
         $this->default['encrypt'] = filter_var(
-            env(
-                'DB_ENCRYPT',
-                env('database.default.encrypt', $this->default['encrypt'])
-            ),
+            ($ssl !== false && $ssl !== '')
+                ? $ssl
+                : env('database.default.encrypt', 'true'),
             FILTER_VALIDATE_BOOLEAN
         );
 
