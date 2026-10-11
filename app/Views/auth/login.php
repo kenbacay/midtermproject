@@ -7,14 +7,17 @@
 
 <h1>Staff Login</h1>
 
-<form action="http://localhost:8080/index.php/login" method="post">
+<form action="/index.php/login" method="post">
+    <?= csrf_field() ?>
 
     <label for="username">Username:</label><br>
     <input type="text" id="username" name="username" required>
+
     <br><br>
 
     <label for="password">Password:</label><br>
     <input type="password" id="password" name="password" required>
+
     <br><br>
 
     <button type="submit">Login</button>
