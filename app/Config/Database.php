@@ -195,60 +195,56 @@ class Database extends Config
     /**
      * Load database settings from environment variables.
      */
-    public function __construct()
-    {
-        parent::__construct();
+   public function __construct()
+{
+    parent::__construct();
 
-        $hostname = getenv('DB_HOST');
-        $username = getenv('DB_USER');
-        $password = getenv('DB_PASSWORD');
-        $database = getenv('DB_NAME');
-        $driver   = getenv('DB_DRIVER');
-        $port     = getenv('DB_PORT');
-        $ssl      = getenv('DB_SSL');
+    $this->default['hostname'] = env(
+        'DB_HOST',
+        env('database.default.hostname', 'localhost')
+    );
 
-        $this->default['hostname'] = ($hostname !== false && $hostname !== '')
-            ? $hostname
-            : env('database.default.hostname', 'localhost');
+    $this->default['username'] = env(
+        'DB_USER',
+        env('database.default.username', '')
+    );
 
-        $this->default['username'] = ($username !== false && $username !== '')
-            ? $username
-            : env('database.default.username', '');
+    $this->default['password'] = env(
+        'DB_PASSWORD',
+        env('database.default.password', '')
+    );
 
-        $this->default['password'] = ($password !== false)
-            ? $password
-            : env('database.default.password', '');
+    $this->default['database'] = env(
+        'DB_NAME',
+        env('database.default.database', '')
+    );
 
-        $this->default['database'] = ($database !== false && $database !== '')
-            ? $database
-            : env('database.default.database', '');
+    $this->default['DBDriver'] = env(
+        'DB_DRIVER',
+        env('database.default.DBDriver', 'MySQLi')
+    );
 
-        $this->default['DBDriver'] = ($driver !== false && $driver !== '')
-            ? $driver
-            : env('database.default.DBDriver', 'MySQLi');
+    $this->default['port'] = (int) env(
+        'DB_PORT',
+        env('database.default.port', 3306)
+    );
 
-        $this->default['port'] = ($port !== false && $port !== '')
-            ? (int) $port
-            : (int) env('database.default.port', 3306);
+    $this->default['encrypt'] = filter_var(
+        env('DB_SSL', 'true'),
+        FILTER_VALIDATE_BOOLEAN
+    );
 
-        $this->default['encrypt'] = filter_var(
-            ($ssl !== false && $ssl !== '')
-                ? $ssl
-                : env('database.default.encrypt', 'true'),
-            FILTER_VALIDATE_BOOLEAN
-        );
+    /*
+     * Show detailed errors in development.
+     * Hide sensitive database errors in production.
+     */
+    $this->default['DBDebug'] = ENVIRONMENT !== 'production';
 
-        /*
-         * Show detailed errors in development.
-         * Hide sensitive database errors in production.
-         */
-        $this->default['DBDebug'] = ENVIRONMENT !== 'production';
-
-        // Ensure that we always set the database group to 'tests' if
-        // we are currently running an automated test suite, so that
-        // we don't overwrite live data on accident.
-        if (ENVIRONMENT === 'testing') {
-            $this->defaultGroup = 'tests';
-        }
+    // Ensure that we always set the database group to 'tests' if
+    // we are currently running an automated test suite, so that
+    // we don't overwrite live data on accident.
+    if (ENVIRONMENT === 'testing') {
+        $this->defaultGroup = 'tests';
     }
+}
 }
