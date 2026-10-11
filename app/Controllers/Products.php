@@ -39,7 +39,7 @@ class Products extends BaseController
         $image = $this->request->getFile('image');
 
         if ($image && $image->isValid() && ! $image->hasMoved()) {
-            $uploadPath = FCPATH . 'uploads/products/';
+            $uploadPath = WRITEPATH . 'uploads/products/';
 
             if (! is_dir($uploadPath)) {
                 mkdir($uploadPath, 0775, true);
@@ -112,7 +112,7 @@ class Products extends BaseController
         $image = $this->request->getFile('image');
 
         if ($image && $image->isValid() && ! $image->hasMoved()) {
-            $uploadPath = FCPATH . 'uploads/products/';
+            $uploadPath = WRITEPATH . 'uploads/products/';
 
             if (! is_dir($uploadPath)) {
                 mkdir($uploadPath, 0775, true);
@@ -136,6 +136,24 @@ class Products extends BaseController
         ]);
 
         return redirect()->to('/products');
+    }
+
+    public function image($filename)
+    {
+        $filename = basename($filename);
+        $filePath = WRITEPATH . 'uploads/products/' . $filename;
+
+        if (! is_file($filePath)) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException(
+                'Image not found'
+            );
+        }
+
+        $mimeType = mime_content_type($filePath) ?: 'application/octet-stream';
+
+        return $this->response
+            ->setHeader('Content-Type', $mimeType)
+            ->setBody(file_get_contents($filePath));
     }
 
     public function delete($id)
