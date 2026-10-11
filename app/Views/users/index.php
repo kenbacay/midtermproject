@@ -1,36 +1,107 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>User Accounts</title>
-</head>
-<body>
+<h1>Staff Accounts</h1>
 
-    <h1>User Accounts</h1>
+<nav>
+    <?php if (session()->get('logged_in')): ?>
 
-    <nav>
-        <a href="/">Home</a> |
-        <a href="/about">About</a> |
-        <a href="/customers">Customer Accounts</a> |
-        <a href="/users">User Accounts</a>
-    </nav>
+        <a href="<?= base_url('products') ?>">
+            <button type="button">Products</button>
+        </a>
 
-    <br>
+        <a href="<?= base_url('customers') ?>">
+            <button type="button">Customers</button>
+        </a>
 
-    <table border="1" cellpadding="8">
+        <a href="<?= base_url('users') ?>">
+            <button type="button">Staff</button>
+        </a>
+
+        <a href="<?= base_url('sales/new') ?>">
+            <button type="button">Buy / Record Sale</button>
+        </a>
+
+        <a href="<?= base_url('sales/history') ?>">
+            <button type="button">Sales History</button>
+        </a>
+
+        <a href="<?= base_url('logout') ?>">
+            <button type="button">Log Out</button>
+        </a>
+
+    <?php else: ?>
+
+        <a href="<?= base_url('login') ?>">
+            <button type="button">Log In</button>
+        </a>
+
+    <?php endif; ?>
+</nav>
+
+<br>
+
+<nav>
+    <a href="<?= base_url('/') ?>">Home</a> |
+    <a href="<?= base_url('products') ?>">Products</a> |
+    <a href="<?= base_url('customers') ?>">Customers</a> |
+    <a href="<?= base_url('users') ?>">Staff Accounts</a> |
+    <a href="<?= base_url('users/new') ?>">Add Staff</a>
+</nav>
+
+<br><br>
+
+<table border="1" cellpadding="8">
+    <thead>
         <tr>
+            <th>Avatar</th>
             <th>Username</th>
             <th>Full Name</th>
-            <th>Role</th>
+            <th>Created At</th>
+            <th>Actions</th>
         </tr>
+    </thead>
 
-        <?php foreach ($users as $user): ?>
+    <tbody>
+        <?php if (empty($users)): ?>
             <tr>
-                <td><?= esc($user['username']) ?></td>
-                <td><?= esc($user['full_name']) ?></td>
-                <td><?= esc($user['role']) ?></td>
+                <td colspan="5">No staff accounts found.</td>
             </tr>
-        <?php endforeach; ?>
-    </table>
+        <?php else: ?>
+            <?php foreach ($users as $user): ?>
+                <tr>
+                    <td>
+                        <?php if (! empty($user['avatar'])): ?>
+                            <img
+                                src="<?= base_url('uploads/avatars/' . esc($user['avatar'])) ?>"
+                                width="80"
+                                alt="<?= esc($user['full_name']) ?>"
+                            >
+                        <?php else: ?>
+                            No avatar
+                        <?php endif; ?>
+                    </td>
 
-</body>
-</html>
+                    <td><?= esc($user['username']) ?></td>
+                    <td><?= esc($user['full_name']) ?></td>
+                    <td><?= esc($user['created_at']) ?></td>
+
+                    <td>
+                        <a href="<?= base_url('users/edit/' . $user['id']) ?>">
+                            Edit
+                        </a>
+
+                        <form
+                            action="<?= base_url('users/delete/' . $user['id']) ?>"
+                            method="post"
+                            style="display: inline;"
+                        >
+                            <?= csrf_field() ?>
+
+                            <button type="submit">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </tbody>
+</table>
