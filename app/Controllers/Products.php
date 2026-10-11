@@ -42,10 +42,8 @@ class Products extends BaseController
             $uploadPath = FCPATH . 'uploads/products/';
 
             if (! is_dir($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
+                mkdir($uploadPath, 0775, true);
             }
-
-            chmod($uploadPath, 0777);
 
             if (! is_writable($uploadPath)) {
                 return redirect()->back()
@@ -117,10 +115,8 @@ class Products extends BaseController
             $uploadPath = FCPATH . 'uploads/products/';
 
             if (! is_dir($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
+                mkdir($uploadPath, 0775, true);
             }
-
-            chmod($uploadPath, 0777);
 
             if (! is_writable($uploadPath)) {
                 return redirect()->back()
