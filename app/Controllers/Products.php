@@ -36,12 +36,18 @@ class Products extends BaseController
         }
 
         $imageName = null;
-        $image = $this->request->getFile('image');
+$image = $this->request->getFile('image');
 
-        if ($image && $image->isValid() && ! $image->hasMoved()) {
-            $imageName = $image->getRandomName();
-            $image->move(FCPATH . 'uploads/products', $imageName);
-        }
+if ($image && $image->isValid() && ! $image->hasMoved()) {
+    $uploadPath = FCPATH . 'uploads/products/';
+
+    if (! is_dir($uploadPath)) {
+        mkdir($uploadPath, 0775, true);
+    }
+
+    $imageName = $image->getRandomName();
+    $image->move($uploadPath, $imageName);
+}
 
         $productModel = new ProductModel();
 
