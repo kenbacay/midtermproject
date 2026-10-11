@@ -9,7 +9,9 @@ class Auth extends BaseController
     public function login()
     {
         if (session()->get('logged_in')) {
-            return redirect()->to('/products');
+            return $this->response
+                ->setStatusCode(302)
+                ->setHeader('Location', '/index.php/products');
         }
 
         if ($this->request->is('post')) {
@@ -45,11 +47,13 @@ class Auth extends BaseController
                 'user_id'   => $user['id'],
                 'username'  => $user['username'],
                 'full_name' => $user['full_name'],
-                'avatar'    => $user['avatar'],
+                'avatar'    => $user['avatar'] ?? null,
                 'logged_in' => true,
             ]);
 
-            return redirect()->to('/products');
+            return $this->response
+                ->setStatusCode(302)
+                ->setHeader('Location', '/index.php/products');
         }
 
         return view('auth/login');
@@ -59,6 +63,8 @@ class Auth extends BaseController
     {
         session()->destroy();
 
-        return redirect()->to('/login');
+        return $this->response
+            ->setStatusCode(302)
+            ->setHeader('Location', '/index.php/login');
     }
 }

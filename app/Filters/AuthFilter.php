@@ -11,7 +11,9 @@ class AuthFilter implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         if (! session()->get('logged_in')) {
-            return redirect()->to('/login');
+            return service('response')
+                ->setStatusCode(302)
+                ->setHeader('Location', '/index.php/login');
         }
     }
 
