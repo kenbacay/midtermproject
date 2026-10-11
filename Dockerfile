@@ -32,6 +32,7 @@ COPY . .
 
 # Use CodeIgniter's public folder as Apache's document root
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+ENV PORT=10000
 
 RUN sed -ri \
     -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
@@ -39,8 +40,16 @@ RUN sed -ri \
     /etc/apache2/apache2.conf \
     /etc/apache2/conf-available/*.conf
 
-# Create writable folders for CodeIgniter
-# This includes the Render session directory.
+# Allow CodeIgniter .htaccess files
+RUN sed -i \
+    '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' \
+    /etc/apache2/apache2.conf
+
+# Configure Apache for Render's port
+RUN sed -i 's/Listen 80/Listen 10000/' /etc/apache2/ports.conf \
+    && sed -i 's/:80>/:10000>/g' /etc/apache2/sites-available/*.conf
+
+# Create writable CodeIgniter folders
 RUN mkdir -p \
         /var/www/html/writable/session \
         /tmp/ci_sessions \
@@ -51,4 +60,4 @@ RUN mkdir -p \
         /var/www/html/writable \
         /tmp/ci_sessions
 
-EXPOSE 80
+EXPOSE 10000
