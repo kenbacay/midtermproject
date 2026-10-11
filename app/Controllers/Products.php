@@ -24,7 +24,7 @@ class Products extends BaseController
     {
         $rules = [
             'name'           => 'required|max_length[100]',
-            'price'          => 'required|decimal',
+            'price'          => 'required|numeric',
             'stock_quantity' => 'required|integer',
             'image'          => 'permit_empty|is_image[image]|max_size[image,2048]',
         ];
@@ -88,7 +88,7 @@ class Products extends BaseController
     {
         $rules = [
             'name'           => 'required|max_length[100]',
-            'price'          => 'required|decimal',
+            'price'          => 'required|numeric',
             'stock_quantity' => 'required|integer',
             'image'          => 'permit_empty|is_image[image]|max_size[image,2048]',
         ];
